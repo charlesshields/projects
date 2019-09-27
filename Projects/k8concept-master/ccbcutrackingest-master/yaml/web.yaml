@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccbcutrackingest
+spec:
+  selector:
+      matchLabels:
+        app: ccbcutrackingest
+  replicas: 4
+  template:
+      metadata:
+        labels:
+            app: ccbcutrackingest
+      spec:
+        containers:
+        - name: ccbcutrackingest
+          image: trackingingesteastusacr.azurecr.io/trackingeastus:v1
+          imagePullPolicy: Always
+          readinessProbe:
+            httpGet:
+              port: 5000
+              path: /
+          livenessProbe:
+            httpGet:
+              port: 5000
+              path: /
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ccbcutrackingest
+spec:
+  selector:
+    app: ccbcutrackingest
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000    
+  type: LoadBalancer

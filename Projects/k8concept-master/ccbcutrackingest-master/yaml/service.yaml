@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ccbcutrackingest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ccbcutrackingest
+  template:
+    metadata:
+      labels:
+        app: ccbcutrackingest
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: ccbcutrackingest
+        image: ccbcutrackingestacr.azurecr.io/ccbcutrackingest:v1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ccbcutrackingest
+spec: 
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+  - port: 80
+  selector:
+    app: ccbcutrackingest

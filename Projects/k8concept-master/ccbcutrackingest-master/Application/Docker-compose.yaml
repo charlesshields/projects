@@ -1,0 +1,9 @@
+version: '3'
+services:
+  web:
+    build: .
+    image: ccbcutrackingest
+    container_name: ccbcutrackingest 
+    ports:
+     - "5000:5000"
+    

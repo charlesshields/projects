@@ -1,0 +1,44 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: ccbcutrackingesteastus
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: ccbcutrackingesteastus
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: ccbcutrackingesteastus
+        image: ccbcutrackingesteastusacr.azurecr.io/ccbcutrackingesteastus:v1
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+            memory: 100Mi
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: ccbcutrackingesteastus
+#   labels:
+#     app: ccbcutrackingesteastus
+#     tier: frontend
+# spec:
+#   type: LoadBalancer
+#   ports:
+#   - port: 80
+#   selector:
+#     app: ccbcutrackingesteastus
+#     tier: frontend
